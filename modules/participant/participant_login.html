@@ -1,0 +1,94 @@
+<section>
+    <div style='padding:50px'>
+        <input id=username__ID placeholder="Participant Loin ID" class=C__ID__input />
+        <br><input id=password__ID type="password" placeholder="Password" class=C__ID__input />
+        <br><span id="ErrMsg__ID"></span>
+        <br><input id=signin__ID type=button value='Sign in' class=C__ID__button />
+    </div>
+</section>
+<script>
+    function F__ID(){
+        VmInclude:__BASE__/vmiis/Common-Code/style/ease-in-out.js
+        $('#signin__ID').on('click',function(){
+            var username=$('#username__ID').val();
+            var password=$('#password__ID').val();
+ if(username==="") username="5-20005034";
+ if(password==="") password="2QathPN1";
+            var pid=$vm.module_list['participant_login_setup'][0];
+            var sql="select PUID,S1,List=@('List') from [TABLE-"+pid+"] where S2=@S1 and S3=@S2";
+            var req={cmd:'query_records',sql:sql,s1:username,s2:password}
+            $VmAPI.request({data:req,callback:function(res){
+                if(res.records.length===1){
+                    var participant=res.records[0].S1;
+                    var participant_uid=res.records[0].PUID;
+                    var task_list=res.records[0].List;
+                    $vm.load_module_by_name('participant_data_entry',$vm.root_layout_content_slot,{participant:participant,participant_uid:participant_uid,task_list:task_list});
+                }
+                else{
+                    $('#ErrMsg__ID').text("Invalid username or password.")
+                }
+            }})
+        })
+    }
+</script>
+<style>
+    #D__ID,#pvdiv__ID{
+      font-size:10pt;
+      font-family: Verdana,Helvetica,Arial,sans-serif;
+      background: url("__BASE__/vmiis/SaaS/images/fresh_snow.png");
+    }
+    #D__ID{
+      /*background-color:#fff;*/
+    }
+    .C__ID__input{
+      height: 34px;
+      width:260px;
+      color: #555;
+      padding: 1px 6px;
+      font-size: 10pt;
+      background-color: #fff;
+      background-image: none;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      margin-bottom: 10px;
+    }
+    .C__ID__button {
+      margin:16px 0;
+      -webkit-appearance: button;
+      cursor: pointer;
+      color: #fff;
+      background-color: #428bca;
+      border-color: #357ebd;
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.42857143;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      background-image: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+    }
+    .C__ID__button:hover{
+      background-color: #3276b1;
+      border-color: #285e8e;
+    }
+    #ErrMsg__ID{
+        color:#FF0000;
+    }
+    /*
+    .C__ID__s{
+      font: 18pt "Arial";
+      padding:80px;
+    }
+    .C__ID__s span{
+      color:#FF0000;
+      font: 12pt "Arial";
+    }
+    .C__ID__s input {
+      margin: 6px 0;
+    }
+    */
+</style>

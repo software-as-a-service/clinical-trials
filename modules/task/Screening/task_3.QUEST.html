@@ -1,0 +1,60 @@
+<section>
+    VmInclude:__BASE__/vmiis/Common-Code/toolbar/back_save_print.html
+    <div id=pvdiv__ID>
+        <form id=F__ID>
+            <table id=table_form__ID style='width:600px;'>
+                <col class=colA style='width:160px' /><col /></colgroup>
+                <tr><td colspan=2 class='header__ID'>Task 3</td></tr>
+                <tr id=tr_participant__ID><td>Select a participant</td><td>
+                	<input name=Participant__ID  id=Participant__ID  type=text class=sel__ID />
+        			<input name=Participant_uid__ID id=Participant_uid__ID type=text areadonly style="width:50px;color:#ccc;" />
+        			<u style='cursor:pointer;float:right;' id=Participant_r__ID>Remove</u>
+        	    </td></tr>
+                <tr><td>Field 1</td><td><input id=Field_1__ID name=Field_1__ID type=text></input></td></tr>
+                <tr><td>Field 2</td><td><input id=Field_2__ID name=Field_2__ID type=text></input></td></tr>
+                <tr><td>Field 3</td><td><input id=Field_3__ID name=Field_3__ID type=text></input></td></tr>
+            </table>
+        </form>
+    </div>
+</section>
+<script>
+    function F__ID(){
+        //-------------------------------------
+        VmInclude:__BASE__/vmiis/Common-Code/toolbar/back_and_print.js
+        VmInclude:__BASE__/software-as-a-service/clinical-trials/common-code/form.js
+        VmInclude:__BASE__/vmiis/Common-Code/style/ease-in-out.js
+        //-------------------------------------
+        $('#D__ID').on('load',function(){
+            //-------
+            //jQuery validation
+            $('#Field_1__ID').rules('add', 'required');
+            //-------
+            $('#F__ID')[0].reset();
+            //----------------------
+            $('#Participant__ID').val($vm.vm['__ID'].op.participant);
+            $('#Participant_uid__ID').val($vm.vm['__ID'].op.participant_uid);
+            $('#tr_participant__ID').hide();
+            //----------------------
+             _set_req(); _request_data();
+        })
+        //-------------------------------------
+        /*
+        Overwrite these 2 functions if you have special needs
+        _db_to_form=function(record){
+            _default_db_to_form(record);
+        }
+        _form_to_db=function(){
+            if($('#F__ID').valid()===false){    //jQuery validation
+                alert("Data validation is not passed!");
+                return false;
+            }
+            return _default_form_to_db();
+        }
+        */
+        //-------------------------------------
+    }
+</script>
+<style>
+    VmInclude:__BASE__/vmiis/Common-Code/style/default.css
+    VmInclude:__BASE__/vmiis/Common-Code/style/form.css
+</style>

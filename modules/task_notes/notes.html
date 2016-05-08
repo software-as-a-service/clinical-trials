@@ -1,0 +1,102 @@
+<section>
+      VmInclude:__BASE__/vmiis/Common-Code/frame/excel_v2.html
+</section>
+<script>
+    function F__ID(){
+        //-------------------------------------
+        VmInclude:__BASE__/vmiis/Common-Code/frame/excel_v2.js
+        VmInclude:__BASE__/vmiis/Common-Code/style/ease-in-out.js
+        //-------------------------------------
+        var participant_pid=$vm.module_list['participant'][0];
+        //-------------------------------------
+        _fields="Participant,Visit/Task|Visit_Task,Short_Title,Contents,Color";
+        _fields+=",Submit Date|DateTime,Submitted by|Author";
+        //-------------------------------------
+        var parent_where;
+        var new_pre_data_process;
+        //-------------------------------------
+        $('#D__ID').on('load',function(){
+            /*
+            parent_where=""; if($vm.vm['__ID'].op.task_record_uid!==undefined) parent_where=" where PUID="+$vm.vm['__ID'].op.task_record_uid;
+            new_pre_data_process=undefined;
+            if(parent_where!==undefined && parent_where!==""){
+                new_pre_data_process=function(){
+                    if($vm.vm['__ID'].op.participant!==undefined) $("#excel__ID").handsontable("setDataAtCell", 0, 0, $vm.vm['__ID'].op.participant);
+                    if($vm.vm['__ID'].op.visit_task!==undefined) $("#excel__ID").handsontable("setDataAtCell", 0, 1, $vm.vm['__ID'].op.visit_task);
+                    setTimeout(function(){ $("#excel__ID").handsontable("render"); }, 100);
+                }
+            };
+            //-------------------------------------
+            grid_data();
+            */
+            _set_req();_request_data();
+        });
+        //-------------------------------------
+        var auto_uid={};
+        _after_change=function(record,C){
+            if(C==='Participant'){
+                record.participant_uid=auto_uid[record.Participant];
+            }
+        };
+        //-------------------------------------
+        _table_process=function(table){
+            table.Participant={type: 'autocomplete',trimDropdown:false,source:function (query, process){
+                var sqlA="with tb as (select Item=@('Subject_Initials')+' '+@('DOB'),Value=UID from [FORM-"+participant_pid+"])";
+                sqlA+=" select top 10 Item,Value from tb where Item like '%'+@S1+'%' ";
+                $vm.read_record_auto({query:query,process:process,sql:sqlA,minLength:0,callback:function(nv){auto_uid=nv;}});
+            }};
+            //---------------------------------------------------------------------------
+            table.Color={width:60, renderer:function(instance, td, row, col, prop, value, cellProperties){
+        		if(value===undefined || value===null ){ value="#008800"; $("#excel__ID").handsontable("setDataAtCell", row, col, value); }
+        	    $(td).html("<input type=color value='"+value+"' style='border: 0px solid; background-color:#fff' />");
+        	    $(td).find('input').on('change',function(){ $("#excel__ID").handsontable("setDataAtCell", row, col, this.value); });
+                return td;
+            }};
+        }
+        //-------------------------------------
+        _new_pre_data_process=function(){
+            if($vm.vm['__ID'].op.participant!==undefined) $("#excel__ID").handsontable("setDataAtCell", 0, 0, $vm.vm['__ID'].op.participant);
+            if($vm.vm['__ID'].op.visit_task!==undefined) $("#excel__ID").handsontable("setDataAtCell", 0, 1, $vm.vm['__ID'].op.visit_task);
+        }
+        //-------------------------------------
+        _before_submit=function(record,dbv){
+            var task_record_uid=$vm.vm['__ID'].op.task_record_uid;
+            var task_record_pid=$vm.vm['__ID'].op.task_record_pid;
+            if(task_record_uid!==undefined) dbv.PUID=task_record_uid;
+            if(task_record_pid!==undefined) dbv.PPID=task_record_pid;
+     		dbv.S1=record.Short_Title;
+            if(record.participant_uid!==undefined) dbv.GUID=record.participant_uid;
+            return true;
+        };
+        //-------------------------------------
+        _set_req=function(){
+            //-------------------
+            $('#new__ID').show();
+            //$('#multi__ID').hide();
+            if($vm.vm['__ID'].op.sql_where===''){
+                //$('#multi__ID').show();
+                $('#new__ID').hide();
+            }
+            //-------------------
+            var sql="with tb as (select Information,ID,UID,PPID,PUID,DateTime,Author,RowNum=row_number() over (order by ID DESC) from [TABLE-"+_db_pid+"-@S1] )";
+            sql+="select Information,ID,UID,PPID,PUID,DateTime,Author,RowNum from tb where RowNum between @I6 and @I7";
+            var sql_n="select count(ID) from [TABLE-"+_db_pid+"-@S1]";
+            //-------------------
+            if($vm.vm['__ID'].op.sql_where!==""){
+                var sql_where=$vm.vm['__ID'].op.sql_where;
+                sql=sql.replace('RowNum between @I6 and @I7',sql_where);
+                sql_n+=" where "+sql_where;
+            }
+            //-------------------
+            _req={cmd:'query_records',sql:sql,sql_n:sql_n,s1:'"'+$('#keyword__ID').val()+'"',I:$('#I__ID').text(),page_size:$('#page_size__ID').val()}
+        }
+        //-------------------------------------
+    }
+</script>
+<style>
+    VmInclude:__BASE__/vmiis/Common-Code/toolbar/toolbar_for_excel.css
+    #D__ID{
+        font-size:14px;
+        font-family: Helvetica, Arial, sans-serif;
+    }
+</style>

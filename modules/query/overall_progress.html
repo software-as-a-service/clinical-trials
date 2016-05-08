@@ -1,0 +1,64 @@
+<section>
+    <div id=toolbar__ID>
+        <a id=back__ID>Back</a>
+        <a id=query__ID >Query</a>
+        <a id=export__ID >Export</a>
+    	<a id=pv__ID >Print Version</a>
+    	<span class=tab__ID></span>Overall Progress
+    </div>
+    VmInclude:__BASE__/vmiis/Common-Code/frame/excel_container.html
+</section>
+<script>
+    function F__ID(){
+        //------------------------
+        VmInclude:__BASE__/vmiis/Common-Code/frame/excel_v2.js
+        //------------------------
+        var participant_pid='20005031';
+        var list=[
+            ['Screening: Task 1','20008387'],
+            ['Screening: Task 2','20008388'],
+            ['Screening: Task 3','20008393'],
+            ['Visit 1: Task 1','20008394'],
+            ['Visit 1: Task 2','20008395'],
+            ['Visit 1: Task 3','20008396'],
+            ['Visit 1: Task 4','20008397'],
+            ['Visit 1: Task 5','20008398'],
+            ['Visit 1: Task 6','20008399'],
+            ['Visit 1: Task 7','20008400'],
+            ['Visit 1: Task 8','20008401'],
+            ['Visit 1: Task 9','20008402'],
+            ['Visit 2: Task 1','20008403'],
+            ['Visit 2: Task 2','20008404'],
+            ['Visit 2: Task 3','20008405'],
+            ['Visit 2: Task 4','20008406'],
+            ['Visit 2: Task 5','20008407'],
+            ['Visit 2: Task 6','20008408'],
+            ['Visit 2: Task 7','20008409'],
+            ['Visit 2: Task 8','20008410'],
+            ['Visit 2: Task 9','20008411'],
+        ];
+        //------------------------
+        _fields='Task,Number'
+        //------------------------
+        $('#D__ID').on('load',function(){          _set_req(); _request_data();                  })
+        $('#query__ID').on('click',function(){     _set_req(); _request_data();                  })
+        //------------------------
+        _set_req=function(){
+            var sql="";
+            for(var i=0;i<list.length;i++){
+                if(sql!=="") sql+=" union ";
+                sql+=" select Task='"+list[i][0]+"',Number=Count(ID) from [FORM-"+list[i][1]+"]";
+                sql+=" join pt on puid=pt.uid ";
+            }
+            sql="with pt as (select uid from [TABLE-"+participant_pid+"]) "+sql;
+            _req={cmd:'query_records',sql:sql}
+        }
+        //-------------------------------------
+        _set_req_export=_set_req;
+        _filename="overall_progress.csv";
+        //-------------------------------------
+    }
+</script>
+<style>
+    VmInclude:__BASE__/vmiis/Common-Code/style/default.css
+</style>

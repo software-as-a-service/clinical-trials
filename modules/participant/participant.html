@@ -1,0 +1,81 @@
+<section>
+      VmInclude:__BASE__/vmiis/Common-Code/frame/excel_v2_with_import.html
+</section>
+<script>
+    function F__ID(){
+        //-------------------------------------
+        _fields="Record ID|UID,Site,CRC_ID,Screening_Number,Subject_Initials,Gender,DOB,Setup";
+        _fields+=",Submit Date|DateTime,Submitted by|Author";
+        //-------------------------------------
+        VmInclude:__BASE__/vmiis/Common-Code/frame/excel_v2.js
+        VmInclude:__BASE__/vmiis/Common-Code/style/ease-in-out.js
+        //-------------------------------------
+        $('#D__ID').on('load',function(){ site_filter_and_request(); })
+        //-------------------------------------
+        var site_sql_where='';
+        var site_array=[];
+        var site_filter_and_request=function(){
+            var site_filter_pid=$vm.module_list['site_filter'][0];
+            var sql="select List=@('Site_List') from [FORM-"+site_filter_pid+"] where S2=@S1";
+            var req_data={cmd:'query_records',sql:sql,s1:$vm.user};
+            $VmAPI.request({data:req_data,callback:function(res){
+                if(res.records.length>0){
+                    var sites=res.records[0].List.replace(/\r/g,'\n').replace(/\n\n/g,'\n').replace(/\n/g,',');
+                    sites=sites.replace(',*','');
+                    sites=sites.replace('*','');
+        	        site_array=sites.split(',');
+                    var sites="";
+                	for(var i=0;i<site_array.length;i++){
+                		if(sites!=="") sites+=",";
+                		sites+="'"+site_array[i]+"'";
+                	}
+                    if(res.records[0].List.indexOf('*')!==-1) site_sql_where='';
+                    else site_sql_where=" where S1 in ("+sites+")";
+                }
+                else{
+                    site_sql_where=" where S1 in ('')";
+                }
+                _set_req(); _request_data();
+            }});
+        }
+        //-------------------------------------
+        var _set_req=function(){
+            //-------------------
+            var sql="with tb as (select Information,ID,UID,PUID,S1,DateTime,Author,RowNum=row_number() over (order by ID DESC) from [TABLE-"+_db_pid+"-@S1]) ";
+            sql+="select Information,ID,UID,PUID,S1,DateTime,Author,RowNum from tb where RowNum between @I6 and @I7";
+            var sql_n="select count(ID) from [TABLE-"+_db_pid+"-@S1]";
+            //-------------------
+            if(site_sql_where!==''){
+                sql="with tb as (select Information,ID,UID,PUID,S1,DateTime,Author,RowNum=row_number() over (order by ID DESC) from [TABLE-"+_db_pid+"-@S1] "+site_sql_where+") ";
+                sql+="select Information,ID,UID,PUID,S1,DateTime,Author,RowNum from tb where RowNum between @I6 and @I7";
+                sql_n="select count(ID) from [TABLE-"+_db_pid+"-@S1]"+site_sql_where+"";
+            }
+            //-------------------
+            _req={cmd:'query_records',sql:sql,sql_n:sql_n,s1:'"'+$('#keyword__ID').val()+'"',I:$('#I__ID').text(),page_size:$('#page_size__ID').val()}
+        }
+        //-------------------------------------
+        _table_process=function(table){
+            table.Site={type:'dropdown',source:site_array,trimDropdown:false};
+            table.Gender={type:'dropdown',source:['---','Male','Female'],trimDropdown:false};
+            table.DOB={width:120,type: 'date',format: 'DD/MM/YYYY',correctFormat:true};
+            //-------------------------------------
+            table.Setup={width:80,renderer:function(instance, td, row, col, prop, value, cellProperties){
+                //if(value===null || value===undefined){ td.innerHTML=""; return td;}
+                td.innerHTML="<u style='cursor:pointer'>Setup</u>";
+                $(td).find('u').on('click',function(){
+                    $vm.load_module_by_name('participant_login_setup',$vm.root_layout_content_slot,{uid:_records[row].UID});
+                });
+                return td;
+            }};
+        }
+        //-------------------------------------
+        var _before_submit=function(record,dbv){
+     		dbv.S1=record.Site;
+            return true;
+        };
+        //-------------------------------------
+    }
+</script>
+<style>
+    VmInclude:__BASE__/vmiis/Common-Code/style/default.css
+</style>

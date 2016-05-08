@@ -1,0 +1,87 @@
+<section>
+    <div id=qe_ID style='padding:50px'>
+        <span id=particpant__ID></span>
+        <br><br>
+        <ui id=items__ID>
+        </ui>
+    </div>
+</section>
+<script>
+    function F__ID(){
+        //---------------------------------
+        VmInclude:__BASE__/vmiis/Common-Code/style/ease-in-out.js
+        //---------------------------------
+        $('#D__ID').on('load',function(){ get_data(); })
+        $('#D__ID').on('back',function(){ get_data(); })
+        //---------------------------------
+        var get_data=function(){
+            //----------------------------------
+            //input
+            var participant=$vm.vm['__ID'].op.participant;
+            var participant_uid=$vm.vm['__ID'].op.participant_uid;
+            var task_list=$vm.vm['__ID'].op.task_list;
+            //----------------------------------
+            //display participant
+            $('#particpant__ID').text(participant);
+            //----------------------------------
+            //setup tasl LI list and sql for checking Completed task
+            var pids=task_list.split(',');
+            var txt="";
+            var sql="";
+            for(var i=0;i<pids.length;i++){
+                var pid=pids[i];
+                for(module in $vm.module_list){
+                    if($vm.module_list[module].length>4 && $vm.module_list[module][4]=="QUEST"){
+                        var module_pid=$vm.module_list[module][0];
+                        if(pid==module_pid){
+                            txt+="<li id="+pid+" data-form_name="+module+">"+$vm.module_list[module][3]+"</li>";
+                        }
+                    }
+                }
+                if(sql!=="") sql+=" union ";
+                sql+="select ID,PID from [FORM-"+pid+"] where puid=@I1";
+            }
+            $('#items__ID').html(txt);
+            //----------------------------------
+            var req={cmd:'query_records',sql:sql,i1:participant_uid};
+            $VmAPI.request({data:req,callback:function(res){
+                //set the first hyper link for opening a task form
+                var done=0;
+                $('#items__ID li').each(function(){
+                    var $li=$(this);
+                    if(done===0){
+                        var li_pid=$li.attr('id');
+                        var found_pid=0;
+                        for(var i=0;i<res.records.length;i++){
+                            if(res.records[i]['PID']==li_pid){
+                                found_pid=1;
+                                break;
+                            }
+                        }
+                        if(found_pid===0){ //no record on server
+                            done=1;
+                            var txt=$li.html();
+                            var li_form_name=$li.attr('data-form_name');
+                            $li.html("<u style='cursor:pointer' data-form_name="+li_form_name+">"+txt+"</u>");
+                            $li.find('u').on('click',function(){
+                                var form_name=$(this).attr('data-form_name');
+                                $vm.load_module_by_name(form_name,$vm.root_layout_content_slot,{participant:participant,participant_uid:participant_uid,task_name:txt});
+                            });
+                        }
+                    }
+                });
+            }})
+        }
+        //-------------------------------------
+    }
+</script>
+<style>
+    #D__ID,#pvdiv__ID{
+      font-size:10pt;
+      font-family: Verdana,Helvetica,Arial,sans-serif;
+      background: url("__BASE__/vmiis/SaaS/images/fresh_snow.png");
+    }
+    #D__ID{
+      /*background-color:#fff;*/
+    }
+</style>

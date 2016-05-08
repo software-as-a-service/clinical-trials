@@ -1,0 +1,171 @@
+<section>
+    <div id=toolbar__ID>
+        <a id=back__ID>Back</a><span class=tab__ID></span><span id=name__ID></span>
+    </div>
+    <div style='clear:left;'>
+        <div class='nav__ID'>
+            <span>Participants</span>
+            <ul>
+                <li data-name=participant>Participants</li>
+                <li data-name=site_filter>Site Filter</li>
+            </ul>
+            <br>
+            <span>Notes</span>
+            <ul>
+                <li data-name='notes' data-op={"sql_where":""} >All Task Notes</li>
+            </ul>
+            <br>
+        </div>
+        <div class='nav__ID'>
+            <span>Screening</span>
+            <ul>
+                <li data-name='s_task_1'>Task 1</li>
+                <li data-name='s_task_2'>Task 2</li>
+                <li data-name='s_task_3'>Task 3</li>
+            </ul>
+        </div>
+        <div class='nav__ID'>
+            <span>Visit 1</span>
+            <ul>
+                <li data-name='v1_task_1'>Task 1</li>
+                <li data-name='v1_task_2'>Task 2</li>
+                <li data-name='v1_task_3'>Task 3</li>
+                <li data-name='v1_task_4'>Task 4</li>
+                <li data-name='v1_task_5'>Task 5</li>
+                <li data-name='v1_task_6'>Task 6</li>
+                <li data-name='v1_task_7'>Task 7</li>
+                <li data-name='v1_task_8'>Task 8</li>
+                <li data-name='v1_task_9'>Task 9</li>
+            </ul>
+        </div>
+        <div class='nav__ID'>
+            <span>Visit 2</span>
+            <ul>
+                <li data-name='v2_task_1'>Task 1</li>
+                <li data-name='v2_task_2'>Task 2</li>
+                <li data-name='v2_task_3'>Task 3</li>
+                <li data-name='v2_task_4'>Task 4</li>
+                <li data-name='v2_task_5'>Task 5</li>
+                <li data-name='v2_task_6'>Task 6</li>
+                <li data-name='v2_task_7'>Task 7</li>
+                <li data-name='v2_task_8'>Task 8</li>
+                <li data-name='v2_task_9'>Task 9</li>
+            </ul>
+        </div>
+        <div class='nav__ID'>
+            <span>Paticipant Visit Booking Calendar</span>
+            <ul>
+                <li data-name=daily>Daily</li>
+                <li data-name=weekly>Weekly</li>
+                <li data-name=monthly>Monthly</li>
+            </ul>
+            <br>
+            <span>Booking Records</span>
+            <ul>
+                <li data-name=booking_record data-op={"sql_where":""} >Booking Records</li>
+            </ul>
+            <br>
+        </div>
+        <div class='nav__ID'>
+            <span>Query</span>
+            <ul>
+                <li data-name='query_overall_progress'>Overall Progress</li>
+                <li data-name='query_individual_progress'>Individual Progress</li>
+            </ul>
+            <br>
+            <span>Chart</span>
+            <ul>
+                <li data-name='chart_overall_progress'>Overall Progress</li>
+                <li data-name='chart_individual_progress'>Individual Progress</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<script>
+      function F__ID(){
+            //---------------------------------------------
+            var content_slot=$vm.root_layout_content_slot;
+            VmInclude:__BASE__/vmiis/Common-Code/navigation/navigation.js
+            VmInclude:__BASE__/vmiis/Common-Code/style/ease-in-out.js
+            //---------------------------------------------
+            $('#name__ID').text('clinical-trials');
+            //---------------------------------------------
+            $('#D__ID').on('load',function(){
+                  _set_permissions();
+            });
+            //---------------------------------------------
+      }
+</script>
+<style>
+      #D__ID,#pvdiv__ID{
+          font-size:10pt;
+          font-family: Verdana,Helvetica,Arial,sans-serif;;
+          background: url("__BASE__/vmiis/SaaS/images/fresh_snow.png");
+      }
+      #D__ID{
+          /*background-color:#fff;*/
+      }
+      #toolbar__ID *{
+          margin:0;
+          padding:0;
+          vertical-align:middle;
+      }
+      #toolbar__ID{
+          padding:6px;
+          background-color:#ddd;
+          font-family: Helvetica, Arial, sans-serif;
+          font-size:11pt;
+          border-bottom: 1px solid #aaa;
+      }
+      #toolbar__ID a{
+          background-color:#697b7b;
+          border:0px solid #18ab29;
+          display:inline-block;
+          cursor:pointer;
+          color:#ffffff;
+          font: 9pt/30px Arial;
+          padding-left:15px;
+          padding-right:15px;
+          text-decoration:none;
+          text-shadow:1px 1px 0px #2f6627;
+          -moz-border-radius:8px;
+          -webkit-border-radius:8px;
+          border-radius:8px;
+          transition: all 0.2s ease-in-out;
+      }
+      #toolbar__ID a:hover {
+        background-color:#525959;
+      }
+      .nav__ID{
+          padding:6px 26px 6px 6px;
+          color: #202727;
+          display:table-cell;
+      }
+      .nav__ID li{
+          cursor:pointer;
+      }
+      .nav__ID span{
+          margin:3px;
+          display:block;
+          font-weight:700;
+      }
+      .nav__ID li{
+          -moz-transition: all 0.2s ease-in-out;
+          -o-transition: all 0.2s ease-in-out;
+          -webkit-transition: all 0.2s ease-in-out;
+          transition: all 0.2s ease-in-out;
+      }
+      .nav__ID li:hover {
+          background: #687A7B;
+          color: #fff;
+          cursor:pointer;
+      }
+      .not_allowed__ID{
+          color:#888!Important;
+          cursor:not-allowed!Important;
+      }
+      .tab__ID{
+          width:30px;
+          display:inline-block;
+      }
+</style>
